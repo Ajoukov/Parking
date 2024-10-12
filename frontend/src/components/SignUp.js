@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
+const BPORT = process.env.REACT_APP_BPORT;
+
 function SignUp({ setUser }) {
   const [username, setUsername] = useState('');
   const [email, setEmail] = useState('');
@@ -11,7 +13,7 @@ function SignUp({ setUser }) {
 
   const handleSignUp = async () => {
     try {
-      const response = await axios.post('http://localhost:5000/api/signup', {
+      const response = await axios.post('http://localhost:' + BPORT + '/api/signup', {
         username,
         email,
         password,

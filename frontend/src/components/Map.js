@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
 
+const BPORT = process.env.REACT_APP_BPORT;
+
 function Map({ heatmapData }) {
   const [locations, setLocations] = useState([]); // State to store recorded locations
   const trackingInterval = useRef(null); // Use useRef to persist interval without causing re-renders
@@ -44,7 +46,7 @@ function Map({ heatmapData }) {
     const storedLocations = JSON.parse(localStorage.getItem('locations')) || [];
 
     // Send the locations to the back-end server
-    axios.post('http://localhost:5000/api/parking', { locations: storedLocations })
+    axios.post('http://localhost:' + BPORT + '/api/parking', { locations: storedLocations })
       .then(response => {
         console.log('Parking data sent successfully:', response.data);
         alert('Parking location data sent to the server!');
