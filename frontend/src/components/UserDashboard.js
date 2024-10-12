@@ -15,6 +15,7 @@ function UserDashboard({ user }) {
   useEffect(() => {
     const fetchUserData = async () => {
       try {
+        console.log(`http://localhost:` + BPORT + `/api/users/${user._id}`);
         const response = await fetch(`http://localhost:` + BPORT + `/api/users/${user._id}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
