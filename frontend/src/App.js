@@ -62,7 +62,7 @@ function App() {
         </Routes>
 
         {/* Display parking button only if user is logged in */}
-        {user && <ParkingButton />}
+        {/* {user && <ParkingButton />} */}
       </div>
     </Router>
   );

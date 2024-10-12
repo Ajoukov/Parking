@@ -1,7 +1,65 @@
 // routes/api.js
 const express = require('express');
 const router = express.Router();
+const axios = require('axios');
 const User = require('../models/User');
+const Segment = require('../models/Segment');
+
+// Function to use Google Roads API to snap to nearest road
+const snapToRoads = async (locations) => {
+  const path = locations.map(loc => `${loc.lat},${loc.lng}`).join('|'); // Format locations as path
+  const apiKey = process.env.GOOGLE_MAPS_API_KEY; // Your Google Maps API key
+  const url = `https://roads.googleapis.com/v1/snapToRoads?path=${path}&interpolate=true&key=${apiKey}`;
+
+  try {
+    const response = await axios.get(url);
+    return response.data.snappedPoints; // Returns an array of snapped points
+  } catch (error) {
+    console.error('Error snapping points to roads:', error);
+    throw new Error('Failed to snap points to roads');
+  }
+};
+
+// Endpoint to store the user's location data when they find parking
+router.post('/parking', async (req, res) => {
+  const { locations } = req.body; // The array of location data sent by the front-end
+  if (!locations || locations.length === 0) {
+    return res.status(400).send('No location data provided');
+  }
+
+  try {
+    // Snap recorded points to nearest roads
+    const snappedPoints = await snapToRoads(locations);
+
+    console.log(snappedPoints);
+
+    // Loop through snapped points and associate them with road segments
+    for (let snappedPoint of snappedPoints) {
+      const { latitude, longitude } = snappedPoint.location;
+      
+      // Example: Find a road segment that matches the snapped location
+      const segment = await Segment.findOne({
+        lat_start: { $lte: latitude },
+        lng_start: { $lte: longitude },
+        lat_end: { $gte: latitude },
+        lng_end: { $gte: longitude },
+      });
+
+      if (segment) {
+        // Update real-time parking likelihood for the segment
+        segment.real_time_updates.push({ user_report: 'left_parking' });
+        segment.parking_likelihood = Math.min(1, segment.parking_likelihood + 0.1); // Increase likelihood
+        await segment.save();
+      }
+    }
+
+    res.status(200).send('Parking data stored and segments updated');
+  } catch (error) {
+    console.error('Error storing parking data:', error);
+    res.status(500).send('Error processing parking data');
+  }
+});
+
 
 router.post('/signup', async (req, res) => {
   const { username, email, password } = req.body;
