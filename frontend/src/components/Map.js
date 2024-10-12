@@ -1,11 +1,13 @@
 import React, { useEffect, useState, useRef } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Added for navigation
 
 const BPORT = process.env.REACT_APP_BPORT;
 
 function Map({ heatmapData }) {
   const [locations, setLocations] = useState([]); // State to store recorded locations
   const trackingInterval = useRef(null); // Use useRef to persist interval without causing re-renders
+  const navigate = useNavigate(); // useNavigate hook for routing
 
   // Function to record user's location and keep locations from the past 10 minutes
   const recordLocation = () => {
@@ -129,6 +131,30 @@ function Map({ heatmapData }) {
         onMouseOut={(e) => (e.target.style.backgroundColor = '#4CAF50')}
       >
         I Found Parking
+      </button>
+
+      {/* Button to navigate to user dashboard */}
+      <button
+        onClick={() => navigate('/user')} // Navigates to /user page
+        style={{
+          position: 'absolute',
+          bottom: '70px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          padding: '10px 20px',
+          fontSize: '16px',
+          backgroundColor: '#008CBA',
+          color: 'white',
+          border: 'none',
+          borderRadius: '5px',
+          cursor: 'pointer',
+          boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
+          transition: 'background-color 0.3s ease',
+        }}
+        onMouseOver={(e) => (e.target.style.backgroundColor = '#007BB5')}
+        onMouseOut={(e) => (e.target.style.backgroundColor = '#008CBA')}
+      >
+        Go to Dashboard
       </button>
     </div>
   );
