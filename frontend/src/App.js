@@ -4,9 +4,10 @@ import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-d
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Map from './components/Map';
-import ParkingButton from './components/ParkingButton';
 import useLocationTracking from './useLocationTracking';
 import './App.css';
+
+const BPORT = process.env.REACT_APP_BPORT;
 
 function App() {
   const [user, setUser] = useState(null);
@@ -14,12 +15,21 @@ function App() {
   const [position, setPosition] = useState(null);
 
   // Load user from localStorage on initial load
+  // Load user from localStorage on initial load
   useEffect(() => {
-    const savedUser = JSON.parse(localStorage.getItem('user'));
-    if (savedUser) {
-      setUser(savedUser);
+    const savedUser = localStorage.getItem('user');
+    try {
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser);
+      }
+    } catch (e) {
+      console.error("Error parsing JSON from localStorage:", e);
+      // Optionally, remove the corrupted entry from localStorage
+      localStorage.removeItem('user');
     }
   }, []);
+
 
   // Handle location updates (if needed for your project)
   useLocationTracking(coords => {
@@ -60,9 +70,6 @@ function App() {
           {/* Fallback route for unknown paths */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
-
-        {/* Display parking button only if user is logged in */}
-        {/* {user && <ParkingButton />} */}
       </div>
     </Router>
   );
