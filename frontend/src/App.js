@@ -6,6 +6,7 @@ import SignUp from './components/SignUp';
 import Map from './components/Map';
 import useLocationTracking from './useLocationTracking';
 import './App.css';
+import UserDashboard from './components/UserDashboard';
 
 const BPORT = process.env.REACT_APP_BPORT;
 
@@ -14,7 +15,6 @@ function App() {
   const [heatmapData, setHeatmapData] = useState([]);
   const [position, setPosition] = useState(null);
 
-  // Load user from localStorage on initial load
   // Load user from localStorage on initial load
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
@@ -63,6 +63,7 @@ function App() {
           {/* Public routes (login and signup) */}
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login setUser={setUser} />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUp setUser={setUser} />} />
+          <Route path="/user/" element={user ? <UserDashboard user={user} /> : <Login setUser={setUser} />} />
 
           {/* Protected route (map) */}
           <Route path="/" element={user ? <Map heatmapData={heatmapData} /> : <Navigate to="/login" />} />

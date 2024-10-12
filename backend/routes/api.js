@@ -5,6 +5,51 @@ const axios = require('axios');
 const User = require('../models/User');
 const Segment = require('../models/Segment');
 
+
+
+// Endpoint to get user data (rating, level, settings)
+router.get('/users/:userId', async (req, res) => {
+  const { userId } = req.params;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    res.json({
+      rating: user.rating,
+      level: user.level,
+      settings: user.settings,
+    });
+  } catch (error) {
+    console.error('Error fetching user data:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Endpoint to update user settings
+router.post('/users/:userId/settings', async (req, res) => {
+  const { userId } = req.params;
+  const { emailNotifications, showAccessibility } = req.body;
+
+  try {
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Update user settings
+    user.settings = { emailNotifications, showAccessibility };
+    await user.save();
+
+    res.json({ message: 'Settings updated successfully' });
+  } catch (error) {
+    console.error('Error updating settings:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
 // Function to use Google Roads API to snap to nearest road
 const snapToRoads = async (locations) => {
   const path = locations.map(loc => `${loc.lat},${loc.lng}`).join('|'); // Format locations as path
