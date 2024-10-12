@@ -1,19 +1,10 @@
 // src/App.js
 import React, { useState, useEffect } from 'react';
-import {
-  GoogleMap,
-  LoadScript,
-  HeatmapLayer,
-} from '@react-google-maps/api';
 import axios from 'axios';
 import useLocationTracking from './useLocationTracking';
-
-const mapStyles = {
-  height: '100vh',
-  width: '100%',
-};
-
-const libraries = ['visualization'];
+import Map from './components/Map';
+import ParkingButton from './components/ParkingButton';
+import './App.css';  // Import the CSS file
 
 function App() {
   const [heatmapData, setHeatmapData] = useState([]);
@@ -90,30 +81,15 @@ function App() {
   };
 
   return (
-    <div style={{ position: 'relative' }}>
-      <LoadScript
-        googleMapsApiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY}
-        libraries={libraries}
-      >
-        <GoogleMap
-          mapContainerStyle={mapStyles}
-          zoom={14}
-          center={{ lat: 40.7128, lng: -74.0060 }} // Center on New York City
-        >
-          <HeatmapLayer data={heatmapData} />
-        </GoogleMap>
-      </LoadScript>
-      <button
-        onClick={reportParkingSpot}
-        style={{
-          position: 'absolute',
-          top: '10px',
-          left: '10px',
-          zIndex: 10,
-        }}
-      >
-        I Found Parking
-      </button>
+    <div className="App">
+      <header className="App-header">
+        <h1>Parking Heatmap Finder</h1>
+        <p>Find available parking spots with real-time heatmaps</p>
+      </header>
+      <div className="map-container">
+        <Map heatmapData={heatmapData} apiKey={process.env.REACT_APP_GOOGLE_MAPS_API_KEY} />
+        <ParkingButton onClick={reportParkingSpot} />
+      </div>
     </div>
   );
 }
