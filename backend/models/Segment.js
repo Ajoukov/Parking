@@ -1,22 +1,25 @@
+// models/Segment.js
 const mongoose = require('mongoose');
 
-// Define the schema for road segments
-const segmentSchema = new mongoose.Schema({
-  segment_id: { type: String, required: true, unique: true },
+const SegmentSchema = new mongoose.Schema({
   lat_start: { type: Number, required: true },
   lng_start: { type: Number, required: true },
-  lat_end: { type: Number, required: true },
-  lng_end: { type: Number, required: true },
-  parking_likelihood: { type: Number, default: 0.5 }, // Baseline likelihood of 0.5
+  lat_end: { type: Number },
+  lng_end: { type: Number },
+  parking_likelihood: { type: Number, default: 0 },
   real_time_updates: [
     {
-      timestamp: { type: Date, default: Date.now },
-      user_report: { type: String, enum: ['left_parking', 'found_parking'] },
-    },
+      user_report: String,
+      timestamp: { type: Date, default: Date.now }
+    }
   ],
+  historic_data: [
+    {
+      time_of_day: String,
+      likelihood: Number
+    }
+  ]
 });
 
-// Create the Segment model
-const Segment = mongoose.model('Segment', segmentSchema);
-
+const Segment = mongoose.model('Segment', SegmentSchema);
 module.exports = Segment;
