@@ -9,6 +9,7 @@ function Map({ heatmapData }) {
   const trackingInterval = useRef(null); // Use useRef to persist interval without causing re-renders
   const navigate = useNavigate(); // useNavigate hook for routing
 
+
   // Function to record user's location and keep locations from the past 10 minutes
   const recordLocation = () => {
     if (navigator.geolocation) {
@@ -63,15 +64,18 @@ function Map({ heatmapData }) {
     const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
 
     const loadGoogleMapsScript = () => {
+      const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
+      
       if (!existingScript) {
         const script = document.createElement('script');
-        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
+        const apiKey = process.env.REACT_APP_GOOGLE_MAPS_API_KEY;
+        script.src = `https://maps.googleapis.com/maps/api/js?key=` + apiKey + `&libraries=visualization`;
         script.async = true;
         script.defer = true;
         document.head.appendChild(script);
-
+    
         script.onload = () => {
-          initMap();
+          initMap(); // Initialize the map once the script is loaded
         };
       } else {
         if (window.google && window.google.maps) {
@@ -87,8 +91,11 @@ function Map({ heatmapData }) {
       });
 
       const heatmap = new window.google.maps.visualization.HeatmapLayer({
-        data: heatmapData,
+        data: heatmapData.map(coord => new window.google.maps.LatLng(coord.lat, coord.lng)),
         map: map,
+        radius: 600,
+        opacity: 0.8,
+        maxIntensity: 10,
       });
     };
 
