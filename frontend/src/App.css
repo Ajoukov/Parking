@@ -4,9 +4,118 @@
 }
 
 .App-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 20px;
   background-color: #282c34;
-  padding: 20px;
   color: white;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+h1 {
+  margin: 0;
+  font-size: 24px;
+}
+
+.login-info {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.login-info input {
+  padding: 8px;
+  margin-right: 8px;
+  font-size: 16px;
+}
+
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.login-page input {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+}
+
+.login-page button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-page button:hover {
+  background-color: #21a1f1;
+}
+.login-page, .signup-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background-color: #f0f0f0;
+}
+
+.login-page input, .signup-page input {
+  padding: 10px;
+  margin: 5px;
+  font-size: 16px;
+}
+
+.login-page button, .signup-page button {
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.login-page button:hover, .signup-page button:hover {
+  background-color: #21a1f1;
+}
+
+.login-info button {
+  padding: 8px 16px;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #282c34;
+  font-size: 16px;
+}
+
+.login-info button:hover {
+  background-color: #21a1f1;
+}
+
+.login-button {
+  padding: 8px 16px;
+  background-color: #61dafb;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  color: #282c34;
+  font-size: 16px;
+}
+
+.login-button:hover {
+  background-color: #21a1f1;
 }
 
 h1 {

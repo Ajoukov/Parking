@@ -1,26 +1,47 @@
-// src/components/Map.js
-import React from 'react';
-import { GoogleMap, LoadScript, HeatmapLayer } from '@react-google-maps/api';
+import React, { useEffect } from 'react';
 
-const mapStyles = {
-  height: '100vh',
-  width: '100%',
-};
+function Map({ heatmapData }) {
+  useEffect(() => {
+    const existingScript = document.querySelector(`script[src*="maps.googleapis.com"]`);
 
-const libraries = ['visualization'];
+    const loadGoogleMapsScript = () => {
+      if (!existingScript) {
+        const script = document.createElement('script');
+        script.src = `https://maps.googleapis.com/maps/api/js?key=${process.env.REACT_APP_GOOGLE_MAPS_API_KEY}&libraries=visualization`;
+        script.async = true; // Ensuring async loading
+        script.defer = true; // Ensuring the script is deferred
+        document.head.appendChild(script);
 
-const Map = ({ heatmapData, apiKey }) => {
-  return (
-    <LoadScript googleMapsApiKey={apiKey} libraries={libraries}>
-      <GoogleMap
-        mapContainerStyle={mapStyles}
-        zoom={14}
-        center={{ lat: 40.7128, lng: -74.0060 }} // Center on New York City
-      >
-        <HeatmapLayer data={heatmapData} />
-      </GoogleMap>
-    </LoadScript>
-  );
-};
+        script.onload = () => {
+          initMap(); // Initialize the map after the script has loaded
+        };
+      } else {
+        if (window.google && window.google.maps) {
+          initMap(); // Initialize the map if the API is already loaded
+        }
+      }
+    };
+
+    const initMap = () => {
+      const map = new window.google.maps.Map(document.getElementById('map'), {
+        zoom: 12,
+        center: { lat: 42.373611, lng: -71.109733 }, // Example: Harvard location
+      });
+
+      const heatmap = new window.google.maps.visualization.HeatmapLayer({
+        data: heatmapData,
+        map: map,
+      });
+    };
+
+    loadGoogleMapsScript();
+
+    return () => {
+      // No cleanup needed for Google Maps script
+    };
+  }, [heatmapData]);
+
+  return <div id="map" style={{ height: '500px', width: '100%' }}></div>;
+}
 
 export default Map;

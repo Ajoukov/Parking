@@ -1,27 +1,50 @@
 // routes/api.js
 const express = require('express');
 const router = express.Router();
-const ParkingData = require('../models/ParkingData');
+const User = require('../models/User');
 
-// Endpoint to submit parking data
-router.post('/parking-data', async (req, res) => {
+router.post('/signup', async (req, res) => {
+  const { username, email, password } = req.body;
+
   try {
-    const data = new ParkingData(req.body);
-    await data.save();
-    res.status(201).json({ message: 'Data saved' });
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    // Check if the email is already in use
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ message: 'Email already in use' });
+    }
+
+    // Create new user
+    const newUser = new User({ username, email, password });
+    await newUser.save();
+    
+    // Send back the new user as the response
+    res.status(201).json({ message: 'User registered successfully', user: newUser });
+  } catch (error) {
+    res.status(500).json({ message: 'Error creating user', error });
   }
 });
 
-// Endpoint to get parking data
-router.get('/parking-data', async (req, res) => {
+
+router.post('/login', async (req, res) => {
+  const { email, password } = req.body;
+
   try {
-    const data = await ParkingData.find();
-    res.json(data);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    const isMatch = await user.matchPassword(password);
+    if (!isMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+
+    // Send back the user object as the response
+    res.status(200).json({ message: 'Login successful', user });
+  } catch (error) {
+    res.status(500).json({ message: 'Server error', error });
   }
 });
+
 
 module.exports = router;
