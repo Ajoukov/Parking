@@ -1,0 +1,450 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		31222ED72CBAFE0500EBC2DE /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31222ED62CBAFE0500EBC2DE /* LoginView.swift */; };
+		31222ED92CBB18DE00EBC2DE /* ProfileView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31222ED82CBB18DE00EBC2DE /* ProfileView.swift */; };
+		31222EDB2CBB1A2600EBC2DE /* RegistrationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31222EDA2CBB1A2600EBC2DE /* RegistrationView.swift */; };
+		31222EE42CBB28E700EBC2DE /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 31222EE32CBB28E700EBC2DE /* User.swift */; };
+		318952862CBA5C9D0054F912 /* ParkPalApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318952852CBA5C9D0054F912 /* ParkPalApp.swift */; };
+		318952882CBA5C9D0054F912 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318952872CBA5C9D0054F912 /* ContentView.swift */; };
+		3189528A2CBA5C9E0054F912 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 318952892CBA5C9E0054F912 /* Assets.xcassets */; };
+		3189528D2CBA5C9E0054F912 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3189528C2CBA5C9E0054F912 /* Preview Assets.xcassets */; };
+		318952952CBA8C8F0054F912 /* GoogleMaps in Frameworks */ = {isa = PBXBuildFile; productRef = 318952942CBA8C8F0054F912 /* GoogleMaps */; };
+		318952972CBA8D150054F912 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318952962CBA8D150054F912 /* AppDelegate.swift */; };
+		3189529A2CBA97660054F912 /* ParkingSelectView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318952992CBA97660054F912 /* ParkingSelectView.swift */; };
+		3189529C2CBA97930054F912 /* MapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3189529B2CBA97930054F912 /* MapView.swift */; };
+		3189529E2CBA97C10054F912 /* AboutView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3189529D2CBA97C10054F912 /* AboutView.swift */; };
+		318952A32CBAC7270054F912 /* LocationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 318952A22CBAC7270054F912 /* LocationManager.swift */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		31222ED62CBAFE0500EBC2DE /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		31222ED82CBB18DE00EBC2DE /* ProfileView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProfileView.swift; sourceTree = "<group>"; };
+		31222EDA2CBB1A2600EBC2DE /* RegistrationView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RegistrationView.swift; sourceTree = "<group>"; };
+		31222EE32CBB28E700EBC2DE /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		318952822CBA5C9D0054F912 /* ParkPal.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ParkPal.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		318952852CBA5C9D0054F912 /* ParkPalApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkPalApp.swift; sourceTree = "<group>"; };
+		318952872CBA5C9D0054F912 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		318952892CBA5C9E0054F912 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		3189528C2CBA5C9E0054F912 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		318952962CBA8D150054F912 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
+		318952992CBA97660054F912 /* ParkingSelectView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParkingSelectView.swift; sourceTree = "<group>"; };
+		3189529B2CBA97930054F912 /* MapView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MapView.swift; sourceTree = "<group>"; };
+		3189529D2CBA97C10054F912 /* AboutView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AboutView.swift; sourceTree = "<group>"; };
+		318952A12CBAC3C60054F912 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
+		318952A22CBAC7270054F912 /* LocationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LocationManager.swift; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3189527F2CBA5C9D0054F912 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				318952952CBA8C8F0054F912 /* GoogleMaps in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		31222EDC2CBB1DE400EBC2DE /* Views.Util */ = {
+			isa = PBXGroup;
+			children = (
+				318952A22CBAC7270054F912 /* LocationManager.swift */,
+				3189529B2CBA97930054F912 /* MapView.swift */,
+			);
+			path = Views.Util;
+			sourceTree = "<group>";
+		};
+		31222EDD2CBB1E0300EBC2DE /* Views.Profiles */ = {
+			isa = PBXGroup;
+			children = (
+				31222ED62CBAFE0500EBC2DE /* LoginView.swift */,
+				31222EDA2CBB1A2600EBC2DE /* RegistrationView.swift */,
+				31222EE32CBB28E700EBC2DE /* User.swift */,
+				31222ED82CBB18DE00EBC2DE /* ProfileView.swift */,
+			);
+			path = Views.Profiles;
+			sourceTree = "<group>";
+		};
+		31222EDE2CBB1E3900EBC2DE /* Views.Misc */ = {
+			isa = PBXGroup;
+			children = (
+				3189529D2CBA97C10054F912 /* AboutView.swift */,
+			);
+			path = Views.Misc;
+			sourceTree = "<group>";
+		};
+		318952792CBA5C9D0054F912 = {
+			isa = PBXGroup;
+			children = (
+				318952842CBA5C9D0054F912 /* ParkPal */,
+				318952832CBA5C9D0054F912 /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		318952832CBA5C9D0054F912 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				318952822CBA5C9D0054F912 /* ParkPal.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		318952842CBA5C9D0054F912 /* ParkPal */ = {
+			isa = PBXGroup;
+			children = (
+				318952A12CBAC3C60054F912 /* Info.plist */,
+				31222EDE2CBB1E3900EBC2DE /* Views.Misc */,
+				31222EDC2CBB1DE400EBC2DE /* Views.Util */,
+				31222EDD2CBB1E0300EBC2DE /* Views.Profiles */,
+				318952982CBA97570054F912 /* Views */,
+				318952852CBA5C9D0054F912 /* ParkPalApp.swift */,
+				318952872CBA5C9D0054F912 /* ContentView.swift */,
+				318952962CBA8D150054F912 /* AppDelegate.swift */,
+				318952892CBA5C9E0054F912 /* Assets.xcassets */,
+				3189528B2CBA5C9E0054F912 /* Preview Content */,
+			);
+			path = ParkPal;
+			sourceTree = "<group>";
+		};
+		3189528B2CBA5C9E0054F912 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				3189528C2CBA5C9E0054F912 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		318952982CBA97570054F912 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				318952992CBA97660054F912 /* ParkingSelectView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		318952812CBA5C9D0054F912 /* ParkPal */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 318952902CBA5C9E0054F912 /* Build configuration list for PBXNativeTarget "ParkPal" */;
+			buildPhases = (
+				3189527E2CBA5C9D0054F912 /* Sources */,
+				3189527F2CBA5C9D0054F912 /* Frameworks */,
+				318952802CBA5C9D0054F912 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = ParkPal;
+			packageProductDependencies = (
+				318952942CBA8C8F0054F912 /* GoogleMaps */,
+			);
+			productName = ParkPal;
+			productReference = 318952822CBA5C9D0054F912 /* ParkPal.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		3189527A2CBA5C9D0054F912 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastSwiftUpdateCheck = 1540;
+				LastUpgradeCheck = 1540;
+				TargetAttributes = {
+					318952812CBA5C9D0054F912 = {
+						CreatedOnToolsVersion = 15.4;
+					};
+				};
+			};
+			buildConfigurationList = 3189527D2CBA5C9D0054F912 /* Build configuration list for PBXProject "ParkPal" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 318952792CBA5C9D0054F912;
+			packageReferences = (
+				318952932CBA8C8F0054F912 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */,
+			);
+			productRefGroup = 318952832CBA5C9D0054F912 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				318952812CBA5C9D0054F912 /* ParkPal */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		318952802CBA5C9D0054F912 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3189528D2CBA5C9E0054F912 /* Preview Assets.xcassets in Resources */,
+				3189528A2CBA5C9E0054F912 /* Assets.xcassets in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3189527E2CBA5C9D0054F912 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				318952972CBA8D150054F912 /* AppDelegate.swift in Sources */,
+				31222ED92CBB18DE00EBC2DE /* ProfileView.swift in Sources */,
+				3189529A2CBA97660054F912 /* ParkingSelectView.swift in Sources */,
+				3189529C2CBA97930054F912 /* MapView.swift in Sources */,
+				318952A32CBAC7270054F912 /* LocationManager.swift in Sources */,
+				318952882CBA5C9D0054F912 /* ContentView.swift in Sources */,
+				3189529E2CBA97C10054F912 /* AboutView.swift in Sources */,
+				31222EE42CBB28E700EBC2DE /* User.swift in Sources */,
+				31222ED72CBAFE0500EBC2DE /* LoginView.swift in Sources */,
+				318952862CBA5C9D0054F912 /* ParkPalApp.swift in Sources */,
+				31222EDB2CBB1A2600EBC2DE /* RegistrationView.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		3189528E2CBA5C9E0054F912 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = "DEBUG $(inherited)";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+			};
+			name = Debug;
+		};
+		3189528F2CBA5C9E0054F912 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 17.5;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		318952912CBA5C9E0054F912 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ParkPal/Preview Content\"";
+				DEVELOPMENT_TEAM = 6M32XL67Z7;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ParkPal/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow Location";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.miscsb.ParkPal;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		318952922CBA5C9E0054F912 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
+				CODE_SIGN_STYLE = Automatic;
+				CURRENT_PROJECT_VERSION = 1;
+				DEVELOPMENT_ASSET_PATHS = "\"ParkPal/Preview Content\"";
+				DEVELOPMENT_TEAM = 6M32XL67Z7;
+				ENABLE_PREVIEWS = YES;
+				GENERATE_INFOPLIST_FILE = YES;
+				INFOPLIST_FILE = ParkPal/Info.plist;
+				INFOPLIST_KEY_NSLocationAlwaysAndWhenInUseUsageDescription = "Allow Location";
+				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
+				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
+				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPad = "UIInterfaceOrientationPortrait UIInterfaceOrientationPortraitUpsideDown UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				INFOPLIST_KEY_UISupportedInterfaceOrientations_iPhone = "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				MARKETING_VERSION = 1.0;
+				PRODUCT_BUNDLE_IDENTIFIER = com.miscsb.ParkPal;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_EMIT_LOC_STRINGS = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3189527D2CBA5C9D0054F912 /* Build configuration list for PBXProject "ParkPal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3189528E2CBA5C9E0054F912 /* Debug */,
+				3189528F2CBA5C9E0054F912 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		318952902CBA5C9E0054F912 /* Build configuration list for PBXNativeTarget "ParkPal" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				318952912CBA5C9E0054F912 /* Debug */,
+				318952922CBA5C9E0054F912 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+
+/* Begin XCRemoteSwiftPackageReference section */
+		318952932CBA8C8F0054F912 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/googlemaps/ios-maps-sdk";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 9.1.1;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
+/* Begin XCSwiftPackageProductDependency section */
+		318952942CBA8C8F0054F912 /* GoogleMaps */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 318952932CBA8C8F0054F912 /* XCRemoteSwiftPackageReference "ios-maps-sdk" */;
+			productName = GoogleMaps;
+		};
+/* End XCSwiftPackageProductDependency section */
+	};
+	rootObject = 3189527A2CBA5C9D0054F912 /* Project object */;
+}
