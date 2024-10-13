@@ -3,6 +3,8 @@ const express = require('express');
 const router = express.Router();
 const axios = require('axios');
 const User = require('../models/User');
+const multer = require('multer');
+const path = require('path');
 const Segment = require('../models/Segment');
 const mongoose = require('mongoose');
 
@@ -77,6 +79,9 @@ router.post('/parking', async (req, res) => {
       return res.status(404).send('User not found');
     }
 
+    const contributionPoints = 5;  // Define points for each contribution
+    const pointsToLevelUp = 1;     // Points threshold to level up
+
     // Snap locations to roads
     const snappedPoints = await snapToRoads(locations);
     if (!snappedPoints) return;
@@ -98,7 +103,7 @@ router.post('/parking', async (req, res) => {
 
     console.log('Unique segments:', uniqueSegments);
 
-    // Process all points: decrease for all except the last one
+    // Process all points: after processing the points, award contribution points
     for (let i = 0; i < uniqueSegments.length; i++) {
       const snappedPoint = uniqueSegments[i];
       const isLastPoint = i === uniqueSegments.length - 1;
@@ -108,12 +113,11 @@ router.post('/parking', async (req, res) => {
 
       // Handle new segments (no historic data)
       if (!segment) {
-        // Create a new segment with a parking likelihood of 0.3 or 0
         const newSegment = new Segment({
           lat_start: snappedPoint.latitude,
           lng_start: snappedPoint.longitude,
           parking_likelihood: isLastPoint ? 1 : 0,  // New segments get 0.3 if parked, otherwise 0
-          historic_data: Array(14).fill(0)  // Initialize historic_data with 0 for 14 slots
+          historic_data: Array(14).fill(0),  // Initialize historic_data with 0 for 14 slots
         });
 
         await newSegment.save();
@@ -126,24 +130,20 @@ router.post('/parking', async (req, res) => {
         const isMorning = new Date().getHours() < 12; // Morning (true) or afternoon (false)
         const timeSlotIndex = currentDay * 2 + (isMorning ? 0 : 1); // Calculate index for the time slot
 
-        const recentWeight = 0.7;  // Recent events weight (you can adjust this)
-        const historicWeight = 0.3;  // Historic weight (you can adjust this)
+        const recentWeight = 0.7;  // Recent events weight
+        const historicWeight = 0.3;  // Historic weight
         const recentEventScore = isLastPoint ? 0.3 : 0;  // Recent event score
 
-        // Update parking likelihood using a weighted formula// Ensure newLikelihood is a valid number
         const newLikelihood = recentWeight * recentEventScore + historicWeight * segment.historic_data[timeSlotIndex];
-        console.log(segment.historic_data);
-        console.log(recentWeight, recentEventScore, historicWeight, segment.historic_data[timeSlotIndex]);
         if (isNaN(newLikelihood)) {
           console.error('Calculated likelihood is NaN');
           continue; // Skip this iteration if likelihood is NaN
         }
 
-
         // Update the segment with new likelihood and historic data
         await Segment.findByIdAndUpdate(segment._id, {
           parking_likelihood: newLikelihood,
-          $set: { [`historic_data.${timeSlotIndex}`]: newLikelihood }  // Update the specific time slot
+          $set: { [`historic_data.${timeSlotIndex}`]: newLikelihood },  // Update the specific time slot
         });
 
         console.log(`Segment updated for ${snappedPoint.latitude}, ${snappedPoint.longitude}`);
@@ -153,13 +153,23 @@ router.post('/parking', async (req, res) => {
       user.contributions.push({
         segment_id: segment ? segment._id : newSegment._id,
         action: isLastPoint ? 'found_parking' : 'drove_by',
-        time: Date.now()
+        time: Date.now(),
       });
 
-      await user.save();
+      // Increment user points for each contribution
+      user.points += contributionPoints;
     }
 
-    res.status(200).send('Parking data stored and segments updated');
+    // Check if user should level up
+    if (user.points >= pointsToLevelUp) {
+      user.level += 1;  // Increment user level
+      user.points = 0;   // Reset points after leveling up
+      console.log(`User ${user.username} leveled up to level ${user.level}`);
+    }
+
+    await user.save();
+
+    res.status(200).send('Parking data stored, segments updated, and user level adjusted if applicable');
   } catch (error) {
     console.error('Error storing parking data:', error);
     res.status(500).send('Error processing parking data');
@@ -197,6 +207,56 @@ router.get('/parking/heatmap', async (req, res) => {
   } catch (error) {
     console.error('Error fetching heatmap data:', error);
     res.status(500).json({ message: 'Error fetching heatmap data' });
+  }
+});
+
+// Configure Multer for file uploads
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/'); // Specify the upload directory
+  },
+  filename: (req, file, cb) => {
+    cb(null, `${req.params.userId}-${Date.now()}${path.extname(file.originalname)}`);
+  }
+});
+const upload = multer({ storage });
+
+// Upload profile picture route
+router.post('/users/:userId/upload-profile-picture', upload.single('profilePicture'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Save the image path in the user's profile
+    user.profilePicture = `/uploads/${req.file.filename}`;
+    await user.save();
+
+    res.status(200).json({ message: 'Profile picture uploaded successfully' });
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    res.status(500).json({ message: 'Server error' });
+  }
+});
+
+// Upload profile picture route
+router.post('/users/:userId/upload-profile-picture', upload.single('profilePicture'), async (req, res) => {
+  try {
+    const user = await User.findById(req.params.userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    // Save the image path in the user's profile
+    user.profilePicture = `/uploads/${req.file.filename}`;
+    await user.save();
+
+    // Respond with the updated profile picture URL
+    res.status(200).json({ profilePicture: user.profilePicture });
+  } catch (error) {
+    console.error('Error uploading profile picture:', error);
+    res.status(500).json({ message: 'Server error' });
   }
 });
 

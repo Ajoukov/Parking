@@ -1,22 +1,25 @@
-// src/components/UserDashboard.js
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faArrowLeft, faSave, faSignOutAlt } from '@fortawesome/free-solid-svg-icons';
+import './UserDashboard.css';
+import axios from 'axios';
 
 const BPORT = process.env.REACT_APP_BPORT;
 
-function UserDashboard({ user }) {
-  const [rating, setRating] = useState(5); // Initial rating of 5 stars for all users
-  const [level, setLevel] = useState(1); // Initial level 1 for all users
+function UserDashboard({ user, handleLogout, setUser }) {
+  const [rating, setRating] = useState(5);
+  const [level, setLevel] = useState(1);
   const [settings, setSettings] = useState({
     emailNotifications: true,
     showAccessibility: false,
   });
+  const [selectedFile, setSelectedFile] = useState(null); // For profile picture upload
+  const fileInputRef = useRef(null); // Reference to file input
 
-  // Load user settings and level from backend when component mounts
   useEffect(() => {
     const fetchUserData = async () => {
       try {
-        console.log(`http://localhost:` + BPORT + `/api/users/${user._id}`);
-        const response = await fetch(`http://localhost:` + BPORT + `/api/users/${user._id}`);
+        const response = await fetch(`http://localhost:${BPORT}/api/users/${user._id}`);
         if (!response.ok) {
           throw new Error('Network response was not ok');
         }
@@ -27,7 +30,7 @@ function UserDashboard({ user }) {
       } catch (error) {
         console.error('Error fetching user data:', error);
       }
-    };    
+    };
     fetchUserData();
   }, [user._id]);
 
@@ -37,7 +40,7 @@ function UserDashboard({ user }) {
 
   const handleSaveSettings = async () => {
     try {
-      const response = await fetch(`http://localhost:` + BPORT + `/api/users/${user._id}/settings`, {
+      const response = await fetch(`http://localhost:${BPORT}/api/users/${user._id}/settings`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -55,12 +58,58 @@ function UserDashboard({ user }) {
     }
   };
 
+  // Handle file selection
+  const handleFileChange = (e) => {
+    setSelectedFile(e.target.files[0]);
+  };
+
+  // Handle profile picture upload
+  const handleUpload = async () => {
+    if (!selectedFile) return;
+    
+    const formData = new FormData();
+    formData.append('profilePicture', selectedFile);
+
+    try {
+      const response = await axios.post(`http://localhost:${BPORT}/api/users/${user._id}/upload-profile-picture`, formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+
+      const updatedUser = { ...user, profilePicture: response.data.profilePicture };
+      setUser(updatedUser);
+      localStorage.setItem('user', JSON.stringify(updatedUser));
+
+      alert('Profile picture uploaded successfully');
+    } catch (error) {
+      console.error('Error uploading profile picture:', error);
+    }
+  };
+
+  // Trigger the file input on avatar click
+  const handleAvatarClick = () => {
+    fileInputRef.current.click(); // Trigger file input click
+  };
+
   return (
-    <div>
-      <h2>User Dashboard</h2>
-      <p>Username: {user.username}</p>
-      <p>Rating: {rating} stars</p>
-      <p>Level: {level}</p>
+    <div style={{ marginTop: '20px' }} className={`user-dashboard`}>
+      <h2>{user.username}</h2>
+      <p>☆ {level}</p>
+
+      <div className="avatar-container" onClick={handleAvatarClick}>
+        {/* < onClick={handleUpload}>Upload</button> */}
+        <button className="edit-overlay">Select profile picture</button>
+      </div>
+
+      {/* Hidden file input */}
+      <input
+        type="file"
+        onChange={handleFileChange}
+        ref={fileInputRef}
+        style={{ display: 'none' }} // Hide the input
+      />
+      <button onClick={handleUpload}>Upload</button>
 
       <h3>User Settings</h3>
       <div>
@@ -86,7 +135,17 @@ function UserDashboard({ user }) {
         </label>
       </div>
 
-      <button onClick={handleSaveSettings}>Save Settings</button>
+      <button className="back-button" onClick={() => window.location.href = "/"}>
+        <FontAwesomeIcon icon={faArrowLeft} /> Back
+      </button>
+      
+      <button className="save-button" onClick={handleSaveSettings}>
+        <FontAwesomeIcon icon={faSave} /> Save Settings
+      </button>
+
+      <button className="logout-button" onClick={handleLogout}>
+        <FontAwesomeIcon icon={faSignOutAlt} /> Logout
+      </button>
     </div>
   );
 }

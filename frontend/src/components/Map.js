@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import useLocationTracking from '../useLocationTracking'; // Ensure this is the correct path to the hook
+import useLocationTracking from '../useLocationTracking';
 
 const BPORT = process.env.REACT_APP_BPORT;
 
@@ -11,9 +11,27 @@ function Map({ heatmapData }) {
   const heatmapLayerRef = useRef(null); // Ref to store heatmap layer
   const [isTracking, setIsTracking] = useState(false); // Controls tracking
   const [showHeatmap, setShowHeatmap] = useState(false); // Controls whether heatmap is shown
+  const [profilePicture, setProfilePicture] = useState(null); // Store the profile picture
+  const [user, setUser] = useState(null); // Store the user data
   const navigate = useNavigate();
 
-  // Function to record the user's location
+  // Load user and profile picture from localStorage
+  useEffect(() => {
+    const savedUser = localStorage.getItem('user');
+    try {
+      if (savedUser) {
+        const parsedUser = JSON.parse(savedUser);
+        setUser(parsedUser); // Set the user data
+        if (parsedUser.profilePicture) {
+          setProfilePicture(parsedUser.profilePicture); // Load the profile picture
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing JSON from localStorage:", e);
+      localStorage.removeItem('user');
+    }
+  }, []);
+
   const handleLocationUpdate = (coords) => {
     console.log('New position:', coords);
     const { latitude, longitude } = coords;
@@ -60,43 +78,13 @@ function Map({ heatmapData }) {
     loadGoogleMapsScript();
   }, []);
 
-  // Use the location tracking hook when tracking is active
   useLocationTracking(handleLocationUpdate, isTracking);
 
-  // Function to start location tracking and show heatmap
   const startTracking = () => {
     localStorage.setItem('locations', JSON.stringify([])); // Reset locations
     setIsTracking(true);
     setShowHeatmap(true);
   };
-
-  // Update the heatmap layer whenever heatmapData or showHeatmap changes
-  useEffect(() => {
-    if (mapInitialized.current && showHeatmap && heatmapData.length > 0) {
-      if (heatmapLayerRef.current) {
-        heatmapLayerRef.current.setMap(null); // Clear the existing heatmap
-      }
-
-      const gradient = [
-        'rgba(255, 0, 0, 0)',  // Transparent (no weight)
-        'rgba(255, 0, 0, 1)',  // Red (bad spots, low weight)
-        'rgba(255, 165, 0, 1)', // Orange
-        'rgba(255, 255, 0, 1)', // Yellow
-        'rgba(0, 255, 0, 1)',  // Green (good spots, high weight)
-      ];
-
-      heatmapLayerRef.current = new window.google.maps.visualization.HeatmapLayer({
-        data: heatmapData.map(coord => ({
-          location: new window.google.maps.LatLng(coord.lat, coord.lng),
-          weight: coord.weight || 1, // Use the weight for intensity, default to 1
-        })),
-        map: mapRef.current,
-        radius: 20,
-        opacity: 0.8,
-        gradient: gradient,  // Apply the custom gradient
-      });
-    }
-  }, [heatmapData, showHeatmap]); // Re-run this effect when heatmapData or showHeatmap changes
 
   const sendParkingData = () => {
     const storedLocations = JSON.parse(localStorage.getItem('locations')) || [];
@@ -126,13 +114,22 @@ function Map({ heatmapData }) {
     <div style={{ position: 'relative' }}>
       <div id="map" style={{ height: '500px', width: '100%' }}></div>
 
-      {/* Show Start Tracking button only if tracking hasn't started */}
+      {/* Show profile picture and username in top bar */}
+      <div className="top-bar">
+        {profilePicture ? (
+          <img src={profilePicture} alt="Profile" className="profile-picture-map" />
+        ) : (
+          <img src="/default-avatar.png" alt="Default Profile" className="profile-picture-map" />
+        )}
+        {user && <span className="username-map">{user.username}</span>}
+      </div>
+
       {!isTracking && (
         <button
           onClick={startTracking}
           style={{
             position: 'absolute',
-            bottom: '120px',
+            bottom: '20px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px 20px',
@@ -146,11 +143,10 @@ function Map({ heatmapData }) {
             transition: 'background-color 0.3s ease',
           }}
         >
-          Start Tracking
+          Begin Searching
         </button>
       )}
 
-      {/* Show I Found Parking button only if tracking has started */}
       {isTracking && (
         <button
           onClick={sendParkingData}
@@ -175,30 +171,6 @@ function Map({ heatmapData }) {
           I Found Parking
         </button>
       )}
-
-      {/* Button to navigate to user dashboard */}
-      <button
-        onClick={() => navigate('/user')}
-        style={{
-          position: 'absolute',
-          bottom: '70px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          padding: '10px 20px',
-          fontSize: '16px',
-          backgroundColor: '#008CBA',
-          color: 'white',
-          border: 'none',
-          borderRadius: '5px',
-          cursor: 'pointer',
-          boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
-          transition: 'background-color 0.3s ease',
-        }}
-        onMouseOver={(e) => (e.target.style.backgroundColor = '#007BB5')}
-        onMouseOut={(e) => (e.target.style.backgroundColor = '#008CBA')}
-      >
-        Go to Dashboard
-      </button>
     </div>
   );
 }

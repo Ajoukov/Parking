@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { BrowserRouter as Router, Route, Routes, Navigate } from 'react-router-dom';
-import axios from 'axios';  // Import axios for making API requests
+import axios from 'axios';
 import Login from './components/Login';
 import SignUp from './components/SignUp';
 import Map from './components/Map';
@@ -15,7 +15,6 @@ function App() {
   const [heatmapData, setHeatmapData] = useState([]);
   const [position, setPosition] = useState(null);
 
-  // Load user from localStorage on initial load
   useEffect(() => {
     const savedUser = localStorage.getItem('user');
     try {
@@ -29,26 +28,37 @@ function App() {
     }
   }, []);
 
-  // Handle location updates (if needed for your project)
+  // Function to refetch user data from the backend
+  const refetchUser = async () => {
+    try {
+      if (user && user._id) {
+        const response = await axios.get(`http://localhost:${BPORT}/api/users/${user._id}`);
+        const updatedUser = response.data;
+        setUser(updatedUser);
+        // Update localStorage with the latest user data
+        localStorage.setItem('user', JSON.stringify(updatedUser));
+      }
+    } catch (error) {
+      console.error('Error refetching user data:', error);
+    }
+  };
+
   useLocationTracking(coords => {
     setPosition({ lat: coords.latitude, lng: coords.longitude });
   });
 
-  // Fetch heatmap data from the backend
   useEffect(() => {
     const fetchHeatmapData = async () => {
       try {
         const response = await axios.get(`http://localhost:${BPORT}/api/parking/heatmap`);
-        setHeatmapData(response.data);  // Set the fetched data as heatmapData
+        setHeatmapData(response.data);
       } catch (error) {
         console.error('Error fetching heatmap data:', error);
       }
     };
-
     fetchHeatmapData();
-  }, [BPORT]);  // Fetch heatmap data when the component loads
+  }, [BPORT]);
 
-  // Handle user logout
   const handleLogout = () => {
     setUser(null);
     localStorage.removeItem('user');
@@ -59,28 +69,30 @@ function App() {
       <div className="App">
         <header className="App-header">
           <div className="header-content">
-            <h1>Parking Heatmap Finder</h1>
             <div className="login-info">
               {user ? (
-                <>
-                  <span>Welcome, {user.username}</span>
-                  <button className="login-button" onClick={handleLogout}>Logout</button>
-                </>
+                <div className="user-info">
+                  <span>{user.username}</span>
+                  <img
+                    className="user-avatar"
+                    src={user.profilePicture ? `http://localhost:${BPORT}${user.profilePicture}` : 'default-avatar.png'}
+                    alt="User Avatar"
+                    onClick={() => window.location.href = "/user"}
+                  />
+                </div>
               ) : null}
             </div>
           </div>
         </header>
 
         <Routes>
-          {/* Public routes (login and signup) */}
           <Route path="/login" element={user ? <Navigate to="/" /> : <Login setUser={setUser} />} />
           <Route path="/signup" element={user ? <Navigate to="/" /> : <SignUp setUser={setUser} />} />
-          <Route path="/user/" element={user ? <UserDashboard user={user} /> : <Login setUser={setUser} />} />
-
-          {/* Protected route (map) */}
+          <Route
+            path="/user"
+            element={user ? <UserDashboard user={user} handleLogout={handleLogout} refetchUser={refetchUser} /> : <Login setUser={setUser} />}
+          />
           <Route path="/" element={user ? <Map heatmapData={heatmapData} /> : <Navigate to="/login" />} />
-
-          {/* Fallback route for unknown paths */}
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
       </div>

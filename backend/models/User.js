@@ -20,6 +20,7 @@ const userSchema = new mongoose.Schema({
     emailNotifications: { type: Boolean, default: true },
     showAccessibility: { type: Boolean, default: false },
   },
+  profilePicture: { type: String, default: '' },
 }, { timestamps: true });
 
 // Encrypt the password before saving the user
