@@ -72,13 +72,13 @@ function App() {
             <div className="login-info">
               {user ? (
                 <div className="user-info">
-                  <span>{user.username}</span>
                   <img
                     className="user-avatar"
                     src={user.profilePicture ? `http://localhost:${BPORT}${user.profilePicture}` : 'default-avatar.png'}
                     alt="User Avatar"
                     onClick={() => window.location.href = "/user"}
                   />
+                  <span style={{marginLeft:`20px`}}>{user.username}</span>
                 </div>
               ) : null}
             </div>

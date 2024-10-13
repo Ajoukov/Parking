@@ -52,7 +52,7 @@ function UserDashboard({ user, handleLogout, setUser }) {
         throw new Error('Failed to save settings');
       }
 
-      alert('Settings saved successfully');
+      // alert('Settings saved successfully');
     } catch (error) {
       console.error('Error saving settings:', error);
     }
@@ -81,7 +81,7 @@ function UserDashboard({ user, handleLogout, setUser }) {
       setUser(updatedUser);
       localStorage.setItem('user', JSON.stringify(updatedUser));
 
-      alert('Profile picture uploaded successfully');
+      // alert('Profile picture uploaded successfully');
     } catch (error) {
       console.error('Error uploading profile picture:', error);
     }

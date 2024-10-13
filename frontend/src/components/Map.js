@@ -14,9 +14,11 @@ function Map({ heatmapData }) {
   const [profilePicture, setProfilePicture] = useState(null); // Store the profile picture
   const [user, setUser] = useState(null); // Store the user data
   const navigate = useNavigate();
+  const [isDisabled, setIsDisabled] = useState(false);
 
   // Load user and profile picture from localStorage
   useEffect(() => {
+
     const savedUser = localStorage.getItem('user');
     try {
       if (savedUser) {
@@ -103,7 +105,7 @@ function Map({ heatmapData }) {
     })
       .then(response => {
         console.log('Parking data sent successfully:', response.data);
-        alert('Parking location data sent to the server!');
+        // alert('Parking location data sent to the server!');
       })
       .catch(error => {
         console.error('Error sending parking data:', error);
@@ -112,24 +114,24 @@ function Map({ heatmapData }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <div id="map" style={{ height: '500px', width: '100%' }}></div>
+      <div id="map" style={{ height: '100vh', width: '100%' }}></div>
 
       {/* Show profile picture and username in top bar */}
-      <div className="top-bar">
+      {/* <div className="top-bar">
         {profilePicture ? (
           <img src={profilePicture} alt="Profile" className="profile-picture-map" />
         ) : (
           <img src="/default-avatar.png" alt="Default Profile" className="profile-picture-map" />
         )}
         {user && <span className="username-map">{user.username}</span>}
-      </div>
+      </div> */}
 
       {!isTracking && (
         <button
           onClick={startTracking}
           style={{
             position: 'absolute',
-            bottom: '20px',
+            bottom: '100px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px 20px',
@@ -149,28 +151,33 @@ function Map({ heatmapData }) {
 
       {isTracking && (
         <button
-          onClick={sendParkingData}
+          onClick={() => {
+            setIsDisabled(true);
+            sendParkingData();
+          }}
+          disabled={isDisabled} // Disable the button when isDisabled is true
           style={{
             position: 'absolute',
-            bottom: '20px',
+            bottom: '100px',
             left: '50%',
             transform: 'translateX(-50%)',
             padding: '10px 20px',
             fontSize: '16px',
-            backgroundColor: '#4CAF50',
+            backgroundColor: isDisabled ? '#808080' : '#4CAF50', // Gray when disabled
             color: 'white',
             border: 'none',
             borderRadius: '5px',
-            cursor: 'pointer',
+            cursor: isDisabled ? 'not-allowed' : 'pointer', // Show disabled cursor
             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             transition: 'background-color 0.3s ease',
           }}
-          onMouseOver={(e) => (e.target.style.backgroundColor = '#45a049')}
-          onMouseOut={(e) => (e.target.style.backgroundColor = '#4CAF50')}
+          onMouseOver={(e) => !isDisabled && (e.target.style.backgroundColor = '#45a049')}
+          onMouseOut={(e) => !isDisabled && (e.target.style.backgroundColor = '#4CAF50')}
         >
           I Found Parking
         </button>
       )}
+
     </div>
   );
 }
