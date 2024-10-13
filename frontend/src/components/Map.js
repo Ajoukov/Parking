@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import useLocationTracking from '../useLocationTracking';
+import ParkingSpotModal from './ParkingSpotModal'; // Import the modal
 
 const BPORT = process.env.REACT_APP_BPORT;
 
@@ -14,6 +15,7 @@ function Map({ heatmapData }) {
   const [showHeatmap, setShowHeatmap] = useState(false); // Controls whether heatmap is shown
   const [profilePicture, setProfilePicture] = useState(null); // Store the profile picture
   const [user, setUser] = useState(null); // Store the user data
+  const [showModal, setShowModal] = useState(false); // Controls modal visibility
   const navigate = useNavigate();
   const [isDisabled, setIsDisabled] = useState(false);
 
@@ -35,11 +37,9 @@ function Map({ heatmapData }) {
   }, []);
 
   const handleLocationUpdate = (coords) => {
-    console.log('New position:', coords);
     const { latitude, longitude } = coords;
 
     const newLocation = { lat: latitude, lng: longitude, timestamp: Date.now() };
-
     const storedLocations = JSON.parse(localStorage.getItem('locations')) || [];
     const updatedLocations = [...storedLocations, newLocation];
     localStorage.setItem('locations', JSON.stringify(updatedLocations));
@@ -121,7 +121,6 @@ function Map({ heatmapData }) {
   // Update the heatmap layer whenever heatmapData or showHeatmap changes
   useEffect(() => {
     if (heatmapLayerRef.current && showHeatmap && heatmapData && heatmapData.length > 0) {
-      console.log(heatmapData);
       const heatmapPoints = heatmapData.map(point => ({
         location: new window.google.maps.LatLng(point.lat, point.lng),
         weight: point.weight || 0,
@@ -139,9 +138,8 @@ function Map({ heatmapData }) {
     setShowHeatmap(true);
   };
 
-  const sendParkingData = () => {
+  const handleParkingSpotSubmit = (wheelchairAccessible, otherSpots) => {
     const storedLocations = JSON.parse(localStorage.getItem('locations')) || [];
-    localStorage.setItem('locations', JSON.stringify([])); // Reset locations
     const storedUser = JSON.parse(localStorage.getItem('user'));
 
     if (!storedUser || !storedUser._id) {
@@ -152,11 +150,14 @@ function Map({ heatmapData }) {
     axios.post(`http://localhost:${BPORT}/api/parking`, {
       locations: storedLocations,
       action: 'found_parking',
-      userId: storedUser._id
+      userId: storedUser._id,
+      wheelchairAccessible,
+      otherSpots
     })
       .then(response => {
         console.log('Parking data sent successfully:', response.data);
-        // alert('Parking location data sent to the server!');
+        setShowModal(false); // Close modal after submitting
+        setIsDisabled(true); // Disable the button after submitting
       })
       .catch(error => {
         console.error('Error sending parking data:', error);
@@ -192,11 +193,8 @@ function Map({ heatmapData }) {
 
       {isTracking && (
         <button
-          onClick={() => {
-            setIsDisabled(true);
-            sendParkingData();
-          }}
-          disabled={isDisabled} // Disable the button when isDisabled is true
+          onClick={() => setShowModal(true)} // Show the modal when clicked
+          disabled={isDisabled}
           style={{
             position: 'absolute',
             bottom: '100px',
@@ -204,21 +202,26 @@ function Map({ heatmapData }) {
             transform: 'translateX(-50%)',
             padding: '10px 20px',
             fontSize: '16px',
-            backgroundColor: isDisabled ? '#808080' : '#4CAF50', // Gray when disabled
+            backgroundColor: isDisabled ? '#808080' : '#4CAF50',
             color: 'white',
             border: 'none',
             borderRadius: '5px',
-            cursor: isDisabled ? 'not-allowed' : 'pointer', // Show disabled cursor
+            cursor: isDisabled ? 'not-allowed' : 'pointer',
             boxShadow: '0px 4px 6px rgba(0, 0, 0, 0.1)',
             transition: 'background-color 0.3s ease',
           }}
-          onMouseOver={(e) => !isDisabled && (e.target.style.backgroundColor = '#45a049')}
-          onMouseOut={(e) => !isDisabled && (e.target.style.backgroundColor = '#4CAF50')}
         >
           I Found Parking
         </button>
       )}
 
+      {/* Modal for additional parking information */}
+      {showModal && (
+        <ParkingSpotModal
+          onSubmit={handleParkingSpotSubmit}
+          onClose={() => setShowModal(false)}
+        />
+      )}
     </div>
   );
 }

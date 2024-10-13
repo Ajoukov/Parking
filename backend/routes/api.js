@@ -116,7 +116,7 @@ router.post('/parking', async (req, res) => {
         const newSegment = new Segment({
           lat_start: snappedPoint.latitude,
           lng_start: snappedPoint.longitude,
-          parking_likelihood: isLastPoint ? 1 : 0.5,  // New segments get 0.3 if parked, otherwise 0
+          parking_likelihood: isLastPoint ? 1 : 0.2,  // New segments get 0.3 if parked, otherwise 0
           historic_data: Array(14).fill(0),  // Initialize historic_data with 0 for 14 slots
         });
 
@@ -126,16 +126,21 @@ router.post('/parking', async (req, res) => {
         console.log(`New segment created for ${snappedPoint.latitude}, ${snappedPoint.longitude}`);
       } else {
         // Update existing segments with weighted historical data
-        const currentDay = new Date().getDay(); // 0 is Sunday, 6 is Saturday
-        const isMorning = new Date().getHours() < 12; // Morning (true) or afternoon (false)
-        const timeSlotIndex = currentDay * 2 + (isMorning ? 0 : 1); // Calculate index for the time slot
+        // const currentDay = new Date().getDay(); // 0 is Sunday, 6 is Saturday
+        // const isMorning = new Date().getHours() < 12; // Morning (true) or afternoon (false)
+        // const timeSlotIndex = currentDay * 2 + (isMorning ? 0 : 1); // Calculate index for the time slot
 
-        const recentWeight = 0.7;  // Recent events weight
-        const historicWeight = 0.3;  // Historic weight
-        const recentEventScore = isLastPoint ? 1 : 0;  // Recent event score
+        if (isLastPoint) {
+          newLikelihood = 0.5 * segment.parking_likelihood;
+        } else {
+          newLikelihood = 0.5 + 0.5 * segment.parking_likelihood;
+        }
+        // const recentWeight = 0.7;  // Recent events weight
+        // const historicWeight = 0.3;  // Historic weight
+        // const recentEventScore = isLastPoint ? 1 : 0;  // Recent event score
 
-        let newLikelihood = recentWeight * recentEventScore + historicWeight * segment.historic_data[timeSlotIndex];
-        if (newLikelihood == 0) newLikelihood = 0.001;
+        // let newLikelihood = recentWeight * recentEventScore + historicWeight * segment.historic_data[timeSlotIndex];
+        // if (newLikelihood == 0) newLikelihood = 0.001;
         if (isNaN(newLikelihood)) {
           console.error('Calculated likelihood is NaN');
           continue; // Skip this iteration if likelihood is NaN
@@ -181,9 +186,9 @@ router.post('/parking', async (req, res) => {
 router.get('/parking/heatmap', async (req, res) => {
   try {
     // Get the current time of day
-    const currentDay = new Date().getDay(); // 0 is Sunday, 6 is Saturday
-    const isMorning = new Date().getHours() < 12; // Morning or afternoon
-    const timeSlotIndex = currentDay * 2 + (isMorning ? 0 : 1); // Calculate index for the time slot
+    // const currentDay = new Date().getDay(); // 0 is Sunday, 6 is Saturday
+    // const isMorning = new Date().getHours() < 12; // Morning or afternoon
+    // const timeSlotIndex = currentDay * 2 + (isMorning ? 0 : 1); // Calculate index for the time slot
 
     // Fetch all segments
     const segments = await Segment.find({});
@@ -191,18 +196,20 @@ router.get('/parking/heatmap', async (req, res) => {
     // Prepare heatmap data
     const heatmapData = segments.map(segment => {
       // Get the historic likelihood for the current time slot
-      const historicalLikelihood = segment.historic_data[timeSlotIndex] || 0;
+      // const historicalLikelihood = segment.historic_data[timeSlotIndex] || 0;
 
       // Combine real-time parking likelihood and historical likelihood
-      const combinedLikelihood = (segment.parking_likelihood * 0.6) + (historicalLikelihood * 0.4);
+      // segment.parking_likelihood * 0.6;
+      // const combinedLikelihood = (segment.parking_likelihood * 0.6) + (historicalLikelihood * 0.4);
 
-      console.log(combinedLikelihood);
+      // console.log(combinedLikelihood);
 
       // Return the lat, lng, and calculated weight for heatmap
       return {
         lat: segment.lat_start,
         lng: segment.lng_start,
-        weight: combinedLikelihood // Combined likelihood used for the heatmap weight
+        // weight: combinedLikelihood // Combined likelihood used for the heatmap weight
+        weight: segment.parking_likelihood // Combined likelihood used for the heatmap weight
       };
     });
 
