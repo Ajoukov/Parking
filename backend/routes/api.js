@@ -116,7 +116,7 @@ router.post('/parking', async (req, res) => {
         const newSegment = new Segment({
           lat_start: snappedPoint.latitude,
           lng_start: snappedPoint.longitude,
-          parking_likelihood: isLastPoint ? 1 : 0,  // New segments get 0.3 if parked, otherwise 0
+          parking_likelihood: isLastPoint ? 1 : 0.5,  // New segments get 0.3 if parked, otherwise 0
           historic_data: Array(14).fill(0),  // Initialize historic_data with 0 for 14 slots
         });
 
@@ -132,9 +132,10 @@ router.post('/parking', async (req, res) => {
 
         const recentWeight = 0.7;  // Recent events weight
         const historicWeight = 0.3;  // Historic weight
-        const recentEventScore = isLastPoint ? 0.3 : 0;  // Recent event score
+        const recentEventScore = isLastPoint ? 1 : 0;  // Recent event score
 
-        const newLikelihood = recentWeight * recentEventScore + historicWeight * segment.historic_data[timeSlotIndex];
+        let newLikelihood = recentWeight * recentEventScore + historicWeight * segment.historic_data[timeSlotIndex];
+        if (newLikelihood == 0) newLikelihood = 0.001;
         if (isNaN(newLikelihood)) {
           console.error('Calculated likelihood is NaN');
           continue; // Skip this iteration if likelihood is NaN
@@ -194,6 +195,8 @@ router.get('/parking/heatmap', async (req, res) => {
 
       // Combine real-time parking likelihood and historical likelihood
       const combinedLikelihood = (segment.parking_likelihood * 0.6) + (historicalLikelihood * 0.4);
+
+      console.log(combinedLikelihood);
 
       // Return the lat, lng, and calculated weight for heatmap
       return {

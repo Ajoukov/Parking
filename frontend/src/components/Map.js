@@ -9,6 +9,7 @@ function Map({ heatmapData }) {
   const mapRef = useRef(null); // Ref to store the map object
   const mapInitialized = useRef(false); // Ref to track if the map is already initialized
   const heatmapLayerRef = useRef(null); // Ref to store heatmap layer
+  const currentLocationMarkerRef = useRef(null); // Ref to store the current location marker
   const [isTracking, setIsTracking] = useState(false); // Controls tracking
   const [showHeatmap, setShowHeatmap] = useState(false); // Controls whether heatmap is shown
   const [profilePicture, setProfilePicture] = useState(null); // Store the profile picture
@@ -18,7 +19,6 @@ function Map({ heatmapData }) {
 
   // Load user and profile picture from localStorage
   useEffect(() => {
-
     const savedUser = localStorage.getItem('user');
     try {
       if (savedUser) {
@@ -43,15 +43,53 @@ function Map({ heatmapData }) {
     const storedLocations = JSON.parse(localStorage.getItem('locations')) || [];
     const updatedLocations = [...storedLocations, newLocation];
     localStorage.setItem('locations', JSON.stringify(updatedLocations));
+
+    // Update the current location marker on the map
+    if (currentLocationMarkerRef.current) {
+      currentLocationMarkerRef.current.setPosition(new window.google.maps.LatLng(latitude, longitude));
+    } else {
+      // Create a new marker if it doesn't exist
+      currentLocationMarkerRef.current = new window.google.maps.Marker({
+        position: { lat: latitude, lng: longitude },
+        map: mapRef.current,
+        title: 'Your Location',
+        icon: {
+          path: window.google.maps.SymbolPath.CIRCLE,
+          scale: 12,
+          fillColor: '#50f',
+          fillOpacity: 1,
+          strokeWeight: 1,
+        },
+      });
+    }
+
+    // Center the map on the current location
+    mapRef.current.setCenter({ lat: latitude, lng: longitude });
   };
 
-  // Initialize the map once, when the component mounts
+  // Initialize the map and heatmap once, when the component mounts
   useEffect(() => {
     const initMap = () => {
       if (window.google && window.google.maps && !mapInitialized.current) {
         mapRef.current = new window.google.maps.Map(document.getElementById('map'), {
-          zoom: 12,
+          zoom: 15,
           center: { lat: 42.373611, lng: -71.109733 }, // Example: Harvard location
+        });
+
+        // Initialize the heatmap layer
+        heatmapLayerRef.current = new window.google.maps.visualization.HeatmapLayer({
+          data: [],
+          map: mapRef.current,
+          radius: 30,
+          opacity: 1,
+          gradient: [
+            'rgba(76, 185, 80, 0)',
+            'rgba(76, 185, 80, 0.1)',
+            'rgba(76, 185, 80, 0.2)',
+            'rgba(76, 185, 80, 1)',
+            'rgba(76, 185, 80, 1)',
+            'rgba(76, 185, 80, 1)',
+          ]
         });
 
         mapInitialized.current = true;
@@ -79,6 +117,19 @@ function Map({ heatmapData }) {
 
     loadGoogleMapsScript();
   }, []);
+
+  // Update the heatmap layer whenever heatmapData or showHeatmap changes
+  useEffect(() => {
+    if (heatmapLayerRef.current && showHeatmap && heatmapData && heatmapData.length > 0) {
+      console.log(heatmapData);
+      const heatmapPoints = heatmapData.map(point => ({
+        location: new window.google.maps.LatLng(point.lat, point.lng),
+        weight: point.weight || 0,
+      }));
+
+      heatmapLayerRef.current.setData(heatmapPoints);
+    }
+  }, [heatmapData, showHeatmap]);
 
   useLocationTracking(handleLocationUpdate, isTracking);
 
@@ -114,17 +165,7 @@ function Map({ heatmapData }) {
 
   return (
     <div style={{ position: 'relative' }}>
-      <div id="map" style={{ height: '100vh', width: '100%' }}></div>
-
-      {/* Show profile picture and username in top bar */}
-      {/* <div className="top-bar">
-        {profilePicture ? (
-          <img src={profilePicture} alt="Profile" className="profile-picture-map" />
-        ) : (
-          <img src="/default-avatar.png" alt="Default Profile" className="profile-picture-map" />
-        )}
-        {user && <span className="username-map">{user.username}</span>}
-      </div> */}
+      <div id="map" style={{ height: '95vh', width: '100%' }}></div>
 
       {!isTracking && (
         <button
