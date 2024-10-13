@@ -65,9 +65,8 @@ const snapToRoads = async (locations) => {
     throw new Error('Failed to snap points to roads');
   }
 };
-
 router.post('/parking', async (req, res) => {
-  const { locations, action, userId } = req.body;
+  const { locations, action, userId, wheelchairAccessible, otherSpots } = req.body;
 
   if (!locations || locations.length === 0) {
     return res.status(200).send('No location data provided');
@@ -116,7 +115,8 @@ router.post('/parking', async (req, res) => {
         const newSegment = new Segment({
           lat_start: snappedPoint.latitude,
           lng_start: snappedPoint.longitude,
-          parking_likelihood: isLastPoint ? 1 : 0.2,  // New segments get 0.3 if parked, otherwise 0
+          parking_likelihood: isLastPoint ? 1 : 0.2,  // New segments get higher likelihood if parked
+          wheelchair_accessible: wheelchairAccessible || false,  // Add wheelchair accessibility info
           historic_data: Array(14).fill(0),  // Initialize historic_data with 0 for 14 slots
         });
 
@@ -126,30 +126,21 @@ router.post('/parking', async (req, res) => {
         console.log(`New segment created for ${snappedPoint.latitude}, ${snappedPoint.longitude}`);
       } else {
         // Update existing segments with weighted historical data
-        // const currentDay = new Date().getDay(); // 0 is Sunday, 6 is Saturday
-        // const isMorning = new Date().getHours() < 12; // Morning (true) or afternoon (false)
-        // const timeSlotIndex = currentDay * 2 + (isMorning ? 0 : 1); // Calculate index for the time slot
-
         if (isLastPoint) {
           newLikelihood = 0.5 * segment.parking_likelihood;
         } else {
           newLikelihood = 0.5 + 0.5 * segment.parking_likelihood;
         }
-        // const recentWeight = 0.7;  // Recent events weight
-        // const historicWeight = 0.3;  // Historic weight
-        // const recentEventScore = isLastPoint ? 1 : 0;  // Recent event score
 
-        // let newLikelihood = recentWeight * recentEventScore + historicWeight * segment.historic_data[timeSlotIndex];
-        // if (newLikelihood == 0) newLikelihood = 0.001;
         if (isNaN(newLikelihood)) {
           console.error('Calculated likelihood is NaN');
           continue; // Skip this iteration if likelihood is NaN
         }
 
-        // Update the segment with new likelihood and historic data
+        // Update the segment with new likelihood and wheelchair accessibility info
         await Segment.findByIdAndUpdate(segment._id, {
           parking_likelihood: newLikelihood,
-          $set: { [`historic_data.${timeSlotIndex}`]: newLikelihood },  // Update the specific time slot
+          wheelchair_accessible: wheelchairAccessible || segment.wheelchair_accessible,  // Update accessibility if provided
         });
 
         console.log(`Segment updated for ${snappedPoint.latitude}, ${snappedPoint.longitude}`);
@@ -164,6 +155,22 @@ router.post('/parking', async (req, res) => {
 
       // Increment user points for each contribution
       user.points += contributionPoints;
+    }
+
+    // If the user saw other open spots, increase the likelihood for recently passed segments
+    if (otherSpots) {
+      for (let i = 0; i < uniqueSegments.length - 1; i++) { // Avoid updating the last parked spot
+        const snappedPoint = uniqueSegments[i];
+        let segment = await Segment.findOne({ lat_start: snappedPoint.latitude, lng_start: snappedPoint.longitude });
+
+        if (segment) {
+          const newLikelihood = segment.parking_likelihood + 0.2;  // Increase likelihood for seen spots
+          await Segment.findByIdAndUpdate(segment._id, {
+            parking_likelihood: Math.min(1, newLikelihood),  // Cap likelihood at 1
+          });
+          console.log(`Likelihood increased for seen spot at ${snappedPoint.latitude}, ${snappedPoint.longitude}`);
+        }
+      }
     }
 
     // Check if user should level up
@@ -181,6 +188,7 @@ router.post('/parking', async (req, res) => {
     res.status(500).send('Error processing parking data');
   }
 });
+
 
 // Endpoint to get heatmap data
 router.get('/parking/heatmap', async (req, res) => {
@@ -202,7 +210,7 @@ router.get('/parking/heatmap', async (req, res) => {
       // segment.parking_likelihood * 0.6;
       // const combinedLikelihood = (segment.parking_likelihood * 0.6) + (historicalLikelihood * 0.4);
 
-      // console.log(combinedLikelihood);
+      console.log(segment.parking_likelihood);
 
       // Return the lat, lng, and calculated weight for heatmap
       return {
