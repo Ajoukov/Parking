@@ -13,12 +13,10 @@ const SegmentSchema = new mongoose.Schema({
       timestamp: { type: Date, default: Date.now }
     }
   ],
-  historic_data: [
-    {
-      time_of_day: String,
-      likelihood: Number
-    }
-  ]
+  historic_data: {
+    type: [Number],
+    default: Array(14).fill(0)  // 14 time slots: 7 days x 2 times (morning and afternoon)
+  }
 });
 
 const Segment = mongoose.model('Segment', SegmentSchema);
